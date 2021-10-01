@@ -10,6 +10,7 @@ pub fn my_parse_docment(docment: String) -> Result<Word, Box<dyn std::error::Err
     let mut part = None;
     let mut description = String::new();
     let mut word = Word::new();
+
     for ol_element in ol_list {
         // list-data-bクラスに必要そうなデータが記載されているのでそれ以外はスルー
         let has_list_data_class = ol_element.value().classes().any(|s| s.eq("list-data-b"));
@@ -41,17 +42,19 @@ pub fn my_parse_docment(docment: String) -> Result<Word, Box<dyn std::error::Err
             }
         }
 
-        for li_element in ol_element.children() {
-            if !li_element.value().is_element() {
+        for li_node in ol_element.children() {
+            if !li_node.value().is_element() {
                 continue;
             }
-            let li_element = ElementRef::wrap(li_element).unwrap();
+            let li_element = ElementRef::wrap(li_node).unwrap();
             let text = li_element.text().collect::<String>();
             description += &text;
         }
     }
+
     if let Some(p) = part {
         word.push(p, description);
     }
+    
     Ok(word)
 }

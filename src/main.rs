@@ -6,7 +6,8 @@ fn main() {
         Ok(document) => {
             let word = my_parse_docment(document).expect("failed parse document");
             for description in word.descriptions {
-                println!("品詞: {:?}\n{}", description.part(), description.text());
+                println!("品詞: {:?}", description.part());
+                println!("{}", description.text());
                 println!("========================================================")
             }
         }

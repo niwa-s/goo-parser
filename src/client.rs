@@ -9,7 +9,7 @@ pub fn get_html(word: &str) -> Result<String, reqwest::Error> {
 }
 
 pub fn get_html_local(word: &str) -> std::io::Result<String> {
-    let file = format!("{}.txt", word);
-    let doc = std::fs::read_to_string(file)?;
+    let file_path = format!("{}.txt", word);
+    let doc = std::fs::read_to_string(file_path)?;
     Ok(doc)
 }

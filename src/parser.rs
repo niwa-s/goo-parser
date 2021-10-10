@@ -1,7 +1,7 @@
-use crate::models::Word;
-
 use super::models::Part;
+use crate::models::Word;
 use scraper::{ElementRef, Selector};
+use std::convert::TryFrom;
 
 pub fn my_parse_docment(docment: String) -> Result<Word, Box<dyn std::error::Error>> {
     let html = scraper::Html::parse_document(&docment);
@@ -31,7 +31,7 @@ pub fn my_parse_docment(docment: String) -> Result<Word, Box<dyn std::error::Err
             {
                 Some(prev_sibling) => {
                     let prev_sibling = ElementRef::wrap(prev_sibling).unwrap();
-                    if let Some(p) = Part::from_element(&prev_sibling) {
+                    if let Ok(p) = Part::try_from(prev_sibling) {
                         part = Some(p);
                         description = String::new();
                     }
@@ -55,6 +55,6 @@ pub fn my_parse_docment(docment: String) -> Result<Word, Box<dyn std::error::Err
     if let Some(p) = part {
         word.push(p, description);
     }
-    
+
     Ok(word)
 }

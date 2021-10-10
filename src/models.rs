@@ -1,5 +1,7 @@
 //! part of speech.
 
+use std::convert::TryFrom;
+
 use scraper::ElementRef;
 
 #[derive(Debug, Clone, Copy)]
@@ -14,24 +16,25 @@ pub enum Part {
     Interjection, // 間投詞
 }
 
-impl Part {
-    pub fn from_element(element: &ElementRef) -> Option<Part> {
+impl TryFrom<ElementRef<'_>> for Part {
+    type Error = ();
+    fn try_from(element: ElementRef) -> Result<Part, Self::Error> {
         for text in element.text() {
             for c in text.chars() {
                 match c {
-                    '名' => return Some(Part::Noun),
-                    '代' => return Some(Part::Pronoun),
-                    '動' => return Some(Part::Verb),
-                    '形' => return Some(Part::Adjective),
-                    '副' => return Some(Part::Adverb),
-                    '前' => return Some(Part::Preposition),
-                    '接' => return Some(Part::Conjunction),
-                    '間' => return Some(Part::Interjection),
+                    '名' => return Ok(Part::Noun),
+                    '代' => return Ok(Part::Pronoun),
+                    '動' => return Ok(Part::Verb),
+                    '形' => return Ok(Part::Adjective),
+                    '副' => return Ok(Part::Adverb),
+                    '前' => return Ok(Part::Preposition),
+                    '接' => return Ok(Part::Conjunction),
+                    '間' => return Ok(Part::Interjection),
                     _ => {}
                 }
             }
         }
-        None
+        Err(())
     }
 }
 
@@ -50,7 +53,6 @@ impl Word {
         self.descriptions.push(Description::new(part, text));
     }
 }
-
 
 #[derive(Debug)]
 pub struct Description {

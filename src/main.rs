@@ -12,10 +12,9 @@ fn main() {
                 .help("Arguments for words to be translated into Japanese")
                 .required(true),
         );
+
     let matches = app.get_matches();
-
     let word = matches.value_of("word").unwrap();
-
     match get_html(word) {
         Ok(document) => {
             let word = my_parse_docment(document).expect("failed parse document");

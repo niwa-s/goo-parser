@@ -12,7 +12,7 @@ pub fn my_parse_docment(docment: String) -> Result<Word, Box<dyn std::error::Err
     let mut word = Word::new();
 
     for ol_element in ol_list {
-        // list-data-bクラスに必要そうなデータが記載されているのでそれ以外はスルー
+        // list-data-bクラスに必要なデータが記載されているのでそれ以外はスルー
         let has_list_data_class = ol_element.value().classes().any(|s| s.eq("list-data-b"));
         if !has_list_data_class {
             continue;

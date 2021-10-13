@@ -4,7 +4,6 @@ pub fn get_html(word: &str) -> Result<String, reqwest::Error> {
     let url = format!("https://dictionary.goo.ne.jp/word/en/{}/", word);
     let res = get(url)?;
     let doc = res.text()?;
-    std::fs::write(format!("{}.txt", word), &doc).expect("write failed");
     Ok(doc)
 }
 

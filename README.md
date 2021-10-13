@@ -2,6 +2,8 @@
 
 [goo和英辞書](https://dictionary.goo.ne.jp/en/)の簡単なパーサーです(作成中)
 
+`https://dictionary.goo.ne.jp/word/*/*/`へのスクレイピングが禁止されていないことはrobots.txtを見て確認していますが、問題がありそうなら消します。
+
 # Usage
 ## install
 ```

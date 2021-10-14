@@ -9,14 +9,12 @@
 ```
 git clone git@github.com:niwa-s/goo-parser.git
 ```
----
 ## run
 
 WORDの部分に検索したい英単語を入れてください。
 ```
 cargo run <WORD>
 ```
----
 ## example
 
 command

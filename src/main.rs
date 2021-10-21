@@ -21,7 +21,6 @@ fn main() {
             for description in word.descriptions {
                 println!("品詞: {:?}", description.part());
                 println!("{}", description.text());
-                println!("========================================================")
             }
         }
         Err(err) => {

@@ -13,32 +13,29 @@ pub fn my_parse_docment(docment: String) -> Result<Word, Box<dyn std::error::Err
 
     for ol_element in ol_list {
         // list-data-bクラスに必要なデータが記載されているのでそれ以外はスルー
-        let has_list_data_class = ol_element.value().classes().any(|s| s.eq("list-data-b"));
-        if !has_list_data_class {
+        let has_list_meanings_class = ol_element.value().classes().any(|s| s.eq("list-meanings"));
+        if !has_list_meanings_class {
             continue;
         }
 
         // ol要素にはlist-meaningsクラスとlist-idiomクラスのどちらかが付与されているので、
         // もしもlist-meaningsクラスが付与されていた場合は、兄要素に記載されている品詞の情報も取得しておく
-        let has_list_meanings_class = ol_element.value().classes().any(|s| s.eq("list-meanings"));
-        if has_list_meanings_class {
-            if let Some(p) = part {
-                word.push(p, description.to_string());
+        if let Some(p) = part {
+            word.push(p, description.to_string());
+        }
+        match ol_element
+            .prev_siblings()
+            .find(|node| node.value().is_element())
+        {
+            Some(prev_sibling) => {
+                let prev_sibling = ElementRef::wrap(prev_sibling).unwrap();
+                if let Ok(p) = Part::try_from(prev_sibling) {
+                    part = Some(p);
+                    description = String::new();
+                }
             }
-            match ol_element
-                .prev_siblings()
-                .find(|node| node.value().is_element())
-            {
-                Some(prev_sibling) => {
-                    let prev_sibling = ElementRef::wrap(prev_sibling).unwrap();
-                    if let Ok(p) = Part::try_from(prev_sibling) {
-                        part = Some(p);
-                        description = String::new();
-                    }
-                }
-                None => {
-                    unreachable!();
-                }
+            None => {
+                unreachable!();
             }
         }
 
@@ -47,8 +44,10 @@ pub fn my_parse_docment(docment: String) -> Result<Word, Box<dyn std::error::Err
                 continue;
             }
             let li_element = ElementRef::wrap(li_node).unwrap();
-            let text = li_element.text().collect::<String>();
-            description += &text;
+            let text: String = li_element.text().take_while(|&s| !s.eq("\n")).collect();
+            let text = text.trim();
+            description += text;
+            description += "\n";
         }
     }
 

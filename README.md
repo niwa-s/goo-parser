@@ -19,7 +19,7 @@ cargo run <WORD>
 
 command
 ```
-cargo run 
+cargo run milk
 ```
 result
 ```

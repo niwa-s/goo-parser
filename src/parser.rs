@@ -44,10 +44,10 @@ pub fn my_parse_docment(docment: String) -> Result<Word, Box<dyn std::error::Err
                 continue;
             }
             let li_element = ElementRef::wrap(li_node).unwrap();
-            let text = li_element.text().collect::<Vec<_>>();
-            println!("{:?}", text);
-            let text = text.join("");
-            description += &text;
+            let text: String = li_element.text().take_while(|&s| !s.eq("\n")).collect();
+            let text = text.trim();
+            description += text;
+            description += "\n";
         }
     }
 

@@ -21,6 +21,7 @@ pub fn parse(docment: String) -> Result<Word, Box<dyn std::error::Error>> {
             let li_elem = ElementRef::wrap(li_node).unwrap();
             let mut text: String = li_elem
                 .text()
+                .skip(1)
                 .take_while(|&s| !s.eq("\n"))
                 .map(|s| s.trim())
                 .collect();

@@ -37,19 +37,14 @@ pub fn my_parse_docment(docment: String) -> Result<Word, Box<dyn std::error::Err
 }
 
 fn get_part(elem: &ElementRef) -> Result<Part, String> {
-    match elem
-        .prev_siblings()
-        .find(|node| node.value().is_element())
-    {
+    match elem.prev_siblings().find(|node| node.value().is_element()) {
         Some(prev_sibling) => {
             let prev_sibling = ElementRef::wrap(prev_sibling).unwrap();
             match Part::try_from(prev_sibling) {
                 Ok(p) => Ok(p),
-                Err(_) => Err("Failed to parse part of speech".to_owned())
+                Err(_) => Err("Failed to parse part of speech".to_owned()),
             }
         }
-        None => {
-            Err("Failed to get prev_siblings".to_owned())
-        }
+        None => Err("Failed to get prev_siblings".to_owned()),
     }
 }

@@ -3,7 +3,7 @@ use crate::models::Word;
 use scraper::{ElementRef, Selector};
 use std::convert::TryFrom;
 
-pub fn my_parse_docment(docment: String) -> Result<Word, Box<dyn std::error::Error>> {
+pub fn parse(docment: String) -> Result<Word, Box<dyn std::error::Error>> {
     let html = scraper::Html::parse_document(&docment);
     let ol_selector = Selector::parse("ol").unwrap();
     let ol_list = html.select(&ol_selector);

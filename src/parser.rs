@@ -19,10 +19,13 @@ pub fn my_parse_docment(docment: String) -> Result<Word, Box<dyn std::error::Err
                 continue;
             }
             let li_elem = ElementRef::wrap(li_node).unwrap();
-            let text: String = li_elem.text().take_while(|&s| !s.eq("\n")).collect();
-            let text = text.trim();
-            description += text;
-            description += "\n";
+            let mut text: String = li_elem
+                .text()
+                .take_while(|&s| !s.eq("\n"))
+                .map(|s| s.trim())
+                .collect();
+            text.push('\n');
+            description.push_str(&text);
         }
 
         word.push(part, description);

@@ -1,5 +1,5 @@
 use clap::{App, Arg};
-use goo_parser::client::{get_html, get_html_local};
+use goo_parser::client::get_html;
 use goo_parser::parser::my_parse_docment;
 
 fn main() {
@@ -15,7 +15,7 @@ fn main() {
 
     let matches = app.get_matches();
     let word = matches.value_of("word").unwrap();
-    match get_html_local(word) {
+    match get_html(word) {
         Ok(document) => {
             let word = my_parse_docment(document).expect("failed parse document");
             for description in word.descriptions {

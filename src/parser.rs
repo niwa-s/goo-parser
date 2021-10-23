@@ -7,53 +7,44 @@ pub fn my_parse_docment(docment: String) -> Result<Word, Box<dyn std::error::Err
     let html = scraper::Html::parse_document(&docment);
     let ol_selector = Selector::parse("ol").unwrap();
     let ol_list = html.select(&ol_selector);
-    let mut part = None;
-    let mut description = String::new();
     let mut word = Word::new();
 
-    for ol_element in ol_list {
-        // list-data-bクラスに必要なデータが記載されているのでそれ以外はスルー
-        let has_list_meanings_class = ol_element.value().classes().any(|s| s.eq("list-meanings"));
+    for ol_elem in ol_list {
+        let has_list_meanings_class = ol_elem.value().classes().any(|s| s.eq("list-meanings"));
         if !has_list_meanings_class {
             continue;
         }
 
-        // ol要素にはlist-meaningsクラスとlist-idiomクラスのどちらかが付与されているので、
-        // もしもlist-meaningsクラスが付与されていた場合は、兄要素に記載されている品詞の情報も取得しておく
-        if let Some(p) = part {
-            word.push(p, description.to_string());
-        }
-        match ol_element
-            .prev_siblings()
-            .find(|node| node.value().is_element())
-        {
-            Some(prev_sibling) => {
-                let prev_sibling = ElementRef::wrap(prev_sibling).unwrap();
-                if let Ok(p) = Part::try_from(prev_sibling) {
-                    part = Some(p);
-                    description = String::new();
-                }
-            }
-            None => {
-                unreachable!();
-            }
-        }
+        // ol_elemの兄要素に単語の品詞情報が含まれているので抽出する
+        let part = get_part(&ol_elem).expect("Failed to get part");
+        let mut description = String::new();
 
-        for li_node in ol_element.children() {
+        for li_node in ol_elem.children() {
             if !li_node.value().is_element() {
                 continue;
             }
-            let li_element = ElementRef::wrap(li_node).unwrap();
-            let text: String = li_element.text().take_while(|&s| !s.eq("\n")).collect();
+            let li_elem = ElementRef::wrap(li_node).unwrap();
+            let text: String = li_elem.text().take_while(|&s| !s.eq("\n")).collect();
             let text = text.trim();
             description += text;
             description += "\n";
         }
-    }
 
-    if let Some(p) = part {
-        word.push(p, description);
+        word.push(part, description);
     }
 
     Ok(word)
+}
+
+fn get_part(elem: &ElementRef) -> Result<Part, String> {
+    match elem.prev_siblings().find(|node| node.value().is_element()) {
+        Some(prev_sibling) => {
+            let prev_sibling = ElementRef::wrap(prev_sibling).unwrap();
+            match Part::try_from(prev_sibling) {
+                Ok(p) => Ok(p),
+                Err(_) => Err("Failed to parse part of speech".to_owned()),
+            }
+        }
+        None => Err("Failed to get prev_siblings".to_owned()),
+    }
 }

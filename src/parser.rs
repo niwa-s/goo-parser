@@ -40,7 +40,7 @@ fn get_part(elem: &ElementRef) -> Result<Part, String> {
         Some(prev_sibling) => {
             let prev_sibling = ElementRef::wrap(prev_sibling).unwrap();
             match Part::try_from(prev_sibling) {
-                Ok(p) => Ok(p),
+                Ok(part) => Ok(part),
                 Err(_) => Err("Failed to parse part of speech".to_owned()),
             }
         }

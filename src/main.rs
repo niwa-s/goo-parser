@@ -1,6 +1,6 @@
 use clap::{App, Arg};
 use goo_parser::client::get_html;
-use goo_parser::parser::my_parse_docment;
+use goo_parser::parser::parse;
 
 fn main() {
     let app = App::new("goo-parser")
@@ -17,8 +17,8 @@ fn main() {
     let word = matches.value_of("word").unwrap();
     match get_html(word) {
         Ok(document) => {
-            let word = my_parse_docment(document).expect("failed parse document");
-            for description in word.descriptions {
+            let word = parse(document).expect("failed parse document");
+            for description in word.descriptions() {
                 println!("品詞: {:?}", description.part());
                 println!("{}", description.text());
             }

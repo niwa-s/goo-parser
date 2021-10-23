@@ -40,7 +40,7 @@ impl TryFrom<ElementRef<'_>> for Part {
 
 #[derive(Debug, Default)]
 pub struct Word {
-    pub descriptions: Vec<Description>,
+    descriptions: Vec<Description>,
 }
 
 impl Word {
@@ -51,6 +51,9 @@ impl Word {
     }
     pub fn push(&mut self, part: Part, text: String) {
         self.descriptions.push(Description::new(part, text));
+    }
+    pub fn descriptions(self) -> impl IntoIterator<Item = Description> {
+        self.descriptions.into_iter()
     }
 }
 

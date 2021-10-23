@@ -5,16 +5,11 @@ use std::convert::TryFrom;
 
 pub fn my_parse_docment(docment: String) -> Result<Word, Box<dyn std::error::Error>> {
     let html = scraper::Html::parse_document(&docment);
-    let ol_selector = Selector::parse("ol").unwrap();
+    let ol_selector = Selector::parse("ol.list-meanings").unwrap();
     let ol_list = html.select(&ol_selector);
     let mut word = Word::new();
 
     for ol_elem in ol_list {
-        let has_list_meanings_class = ol_elem.value().classes().any(|s| s.eq("list-meanings"));
-        if !has_list_meanings_class {
-            continue;
-        }
-
         // ol_elemの兄要素に単語の品詞情報が含まれているので抽出する
         let part = get_part(&ol_elem).expect("Failed to get part");
         let mut description = String::new();

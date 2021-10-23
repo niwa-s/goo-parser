@@ -1,9 +1,7 @@
-//! part of speech.
-
+use scraper::ElementRef;
 use std::convert::TryFrom;
 
-use scraper::ElementRef;
-
+// part of speech.
 #[derive(Debug, Clone, Copy)]
 pub enum Part {
     Noun,         // 名詞

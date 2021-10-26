@@ -1,5 +1,5 @@
 use super::models::Part;
-use crate::models::Word;
+use crate::{consts, models::Word};
 use scraper::{ElementRef, Selector};
 use std::convert::TryFrom;
 
@@ -22,6 +22,7 @@ pub fn parse(docment: String) -> Result<Word, Box<dyn std::error::Error>> {
             let mut text: String = li_elem
                 .text()
                 .skip(1)
+                .map(wrap_hinshi)
                 .take_while(|&s| !s.eq("\n"))
                 .map(|s| s.trim())
                 .collect();
@@ -45,5 +46,13 @@ fn get_part(elem: &ElementRef) -> Result<Part, String> {
             }
         }
         None => Err("Failed to get prev_siblings".to_owned()),
+    }
+}
+
+fn wrap_hinshi(s: &str) -> &str {
+    match s {
+        "自" => consts::INTRANSITIVE_VERB,
+        "他" => consts::TRANSITIVE_VERB,
+        _ => s,
     }
 }

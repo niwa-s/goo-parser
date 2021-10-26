@@ -52,7 +52,7 @@ fn get_part(elem: &ElementRef) -> Result<Part, String> {
 fn wrap_hinshi(s: &str) -> &str {
     match s {
         "自" => consts::INTRANSITIVE_VERB,
-        "他" =>  consts::TRANSITIVE_VERB,
-        _ => s
+        "他" => consts::TRANSITIVE_VERB,
+        _ => s,
     }
 }

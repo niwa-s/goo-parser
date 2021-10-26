@@ -18,10 +18,20 @@ pub fn parse(docment: String) -> Result<Word, Box<dyn std::error::Error>> {
             if !li_node.value().is_element() {
                 continue;
             }
+            let t = "[自]";
+            let u = "[他]";
             let li_elem = ElementRef::wrap(li_node).unwrap();
             let mut text: String = li_elem
                 .text()
                 .skip(1)
+                .map(|s: &str| {
+                    if s.eq("自") {
+                        return t;
+                    } else if s.eq("他") {
+                        return u;
+                    }
+                    s
+                })
                 .take_while(|&s| !s.eq("\n"))
                 .map(|s| s.trim())
                 .collect();

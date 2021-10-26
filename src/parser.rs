@@ -15,19 +15,17 @@ pub fn parse(docment: String) -> Result<Word, Box<dyn std::error::Error>> {
         let mut description = String::new();
 
         for li_node in ol_elem.children() {
-            if !li_node.value().is_element() {
-                continue;
+            if let Some(li_elem) = ElementRef::wrap(li_node) {
+                let mut text: String = li_elem
+                    .text()
+                    .skip(1)
+                    .map(wrap_hinshi)
+                    .take_while(|&s| !s.eq("\n"))
+                    .map(|s| s.trim())
+                    .collect();
+                text.push('\n');
+                description.push_str(&text);
             }
-            let li_elem = ElementRef::wrap(li_node).unwrap();
-            let mut text: String = li_elem
-                .text()
-                .skip(1)
-                .map(wrap_hinshi)
-                .take_while(|&s| !s.eq("\n"))
-                .map(|s| s.trim())
-                .collect();
-            text.push('\n');
-            description.push_str(&text);
         }
 
         word.push(part, description);

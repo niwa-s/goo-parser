@@ -11,7 +11,7 @@ pub fn parse(docment: String) -> Result<Word, Box<dyn std::error::Error>> {
 
     for ol_elem in ol_list {
         // ol_elemの兄要素に単語の品詞情報が含まれているので抽出する
-        let part = get_part(&ol_elem).expect("Failed to get part");
+        let part = get_part(&ol_elem)?;
         let mut description = String::new();
 
         for li_node in ol_elem.children() {
@@ -51,6 +51,8 @@ fn wrap_hinshi(s: &str) -> &str {
     match s {
         "自" => consts::INTRANSITIVE_VERB,
         "他" => consts::TRANSITIVE_VERB,
+        "C" => consts::COUNTABLE_NOUN,
+        "U" => consts::UNCOUNTABLE_NOUN,
         _ => s,
     }
 }
